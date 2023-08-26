@@ -1499,7 +1499,7 @@ object JavaTimeSpec extends ZIOSpecDefault {
           assert(stringify("FebTober").fromJson[Month])(
             isLeft(
               equalTo("(No enum constant java.time.Month.FEBTOBER)") || // JVM
-                equalTo("(Unrecognized month name: FOODY)") || // Scala.js 2.
+                equalTo("(Unrecognized month name: FEBTOBER)") || // Scala.js 2.
                 equalTo("(enum case not found: FEBTOBER)") // Scala.js 3.
             ) 
           )
