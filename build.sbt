@@ -290,6 +290,7 @@ lazy val zioJsonYaml = project
 
 lazy val zioJsonMacros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-macros"))
+  .nativeSettings(_.dependsOn(zioJson.native))
   .settings(stdSettings("zio-json-macros"))
   .settings(crossProjectSettings)
   .settings(macroExpansionSettings)
@@ -332,8 +333,7 @@ lazy val zioJsonInteropHttp4s = project
 
 lazy val zioJsonInteropRefined = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-interop-refined"))
-  .jvmConfigure(_.dependsOn(zioJsonJVM))
-  .jsConfigure(_.dependsOn(zioJsonJS))
+  .dependsOn(zioJson)
   .settings(stdSettings("zio-json-interop-refined"))
   .settings(buildInfoSettings("zio.json.interop.refined"))
   .settings(
@@ -348,8 +348,7 @@ lazy val zioJsonInteropRefined = crossProject(JSPlatform, JVMPlatform, NativePla
 
 lazy val zioJsonInteropScalaz7x = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-interop-scalaz7x"))
-  .jvmConfigure(_.dependsOn(zioJsonJVM))
-  .jsConfigure(_.dependsOn(zioJsonJS))
+  .dependsOn(zioJson)
   .settings(stdSettings("zio-json-interop-scalaz7x"))
   .settings(buildInfoSettings("zio.json.interop.scalaz7x"))
   .settings(
