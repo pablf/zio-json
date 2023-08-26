@@ -32,7 +32,7 @@ addCommandAlias(
 
 addCommandAlias(
   "testScala2",
-  "zioJsonMacrosJVM/test; zioJsonMacrosJS/test; zioJsonMacrosNative/test; zioJsonInteropRefinedJVM/test"
+  "zioJsonMacrosJVM/test; zioJsonInteropRefinedJVM/test"
 )
 
 addCommandAlias(
