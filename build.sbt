@@ -290,7 +290,7 @@ lazy val zioJsonYaml = project
 
 lazy val zioJsonMacros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-macros"))
-  .nativeSettings(_.dependsOn(zioJson.native))
+  .nativeConfigure(_.dependsOn(zioJson.native))
   .settings(stdSettings("zio-json-macros"))
   .settings(crossProjectSettings)
   .settings(macroExpansionSettings)
