@@ -123,7 +123,7 @@ object CodecSpec extends ZIOSpecDefault {
           // It should be fixed from there. Until then, better not to use regex.
 
           import exampletransformkeys._
-          val indianaJones  = """{"wHATcASEiStHIS":""}"""
+          val indianaJones = """{"wHATcASEiStHIS":""}"""
 
           assert(indianaJones.fromJson[Custom])(isRight(equalTo(Custom("")))) &&
           assertTrue(Custom("").toJson == indianaJones) &&

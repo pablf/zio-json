@@ -46,14 +46,14 @@ addCommandAlias(
 )
 
 addCommandAlias(
-  "testJS", 
+  "testJS",
   "zioJsonJS/test; zioJsonInteropScalaz7xJS/test"
-  )
+)
 
 addCommandAlias(
-  "testNative", 
+  "testNative",
   "zioJsonNative/test; zioJsonInteropScalaz7xNative/test"
-  )
+)
 
 val zioVersion = "2.0.15"
 
@@ -67,14 +67,18 @@ lazy val zioJsonRoot = project
     docs,
     zioJsonJVM,
     zioJsonJS,
+    zioJson.native,
     zioJsonYaml,
     zioJsonMacrosJVM,
     zioJsonMacrosJS,
+    zioJsonMacros.native,
     zioJsonInteropHttp4s,
     zioJsonInteropRefined.js,
     zioJsonInteropRefined.jvm,
+    zioJsonInteropRefined.native,
     zioJsonInteropScalaz7x.js,
     zioJsonInteropScalaz7x.jvm,
+    zioJsonInteropScalaz7x.native,
     zioJsonGolden
   )
 
@@ -228,9 +232,9 @@ lazy val zioJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
         case _ =>
           Seq(
-            "ai.x"          %% "play-json-extensions" % "0.42.0" % "test",
-            "com.typesafe.play"                     %%% "play-json"             % "2.9.4"            % "test",
-            "org.typelevel" %% "jawn-ast"             % "1.5.1"  % "test"
+            "ai.x"               %% "play-json-extensions" % "0.42.0" % "test",
+            "com.typesafe.play" %%% "play-json"            % "2.9.4"  % "test",
+            "org.typelevel"      %% "jawn-ast"             % "1.5.1"  % "test"
           )
       }
     }
@@ -238,7 +242,7 @@ lazy val zioJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .nativeSettings(Test / fork := false)
   .nativeSettings(
     libraryDependencies ++= Seq(
-      "io.github.cquiroz" %%% "scala-java-time"      % "2.5.0"
+      "io.github.cquiroz" %%% "scala-java-time" % "2.5.0"
     )
   )
   .enablePlugins(BuildInfoPlugin)
