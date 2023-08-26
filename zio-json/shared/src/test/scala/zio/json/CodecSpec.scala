@@ -103,7 +103,6 @@ object CodecSpec extends ZIOSpecDefault {
           assert(snakedLegacy.fromJson[legacy.Snaked])(isRight(equalTo(legacy.Snaked("")))) &&
           assert(pascaled.fromJson[Pascaled])(isRight(equalTo(Pascaled("")))) &&
           assert(cameled.fromJson[Cameled])(isRight(equalTo(Cameled("")))) &&
-          assert(indianaJones.fromJson[Custom])(isRight(equalTo(Custom("")))) &&
           assert(overrides.fromJson[OverridesAlsoWork])(isRight(equalTo(OverridesAlsoWork("", 0)))) &&
           assertTrue(Kebabed("").toJson == kebabed) &&
           assertTrue(Kebabed("").toJsonAST.toOption.get == kebabed.fromJson[Json].toOption.get) &&
@@ -117,10 +116,24 @@ object CodecSpec extends ZIOSpecDefault {
           assertTrue(Pascaled("").toJsonAST.toOption.get == pascaled.fromJson[Json].toOption.get) &&
           assertTrue(Cameled("").toJson == cameled) &&
           assertTrue(Cameled("").toJsonAST.toOption.get == cameled.fromJson[Json].toOption.get) &&
-          assertTrue(Custom("").toJson == indianaJones) &&
-          assertTrue(Custom("").toJsonAST.toOption.get == indianaJones.fromJson[Json].toOption.get) &&
           assertTrue(OverridesAlsoWork("", 0).toJson == overrides)
         },
+        test("key transformation - except native") {
+          import exampletransformkeys._
+          val indianaJones  = """{"wHATcASEiStHIS":""}"""
+
+          assert(indianaJones.fromJson[Custom])(isRight(equalTo(Custom("")))) &&
+          assertTrue(Custom("").toJson == indianaJones) &&
+          assertTrue(Custom("").toJsonAST.toOption.get == indianaJones.fromJson[Json].toOption.get)
+        } @@ TestAspect.exceptNative,
+        test("key transformation - native") {
+          import exampletransformkeys._
+          val indianaJones  = """{"wHATcASEiStHIS":""}"""
+
+          assert(indianaJones.fromJson[CustomNative])(isRight(equalTo(CustomNative("")))) &&
+          assertTrue(CustomNative("").toJson == indianaJones) &&
+          assertTrue(CustomNative("").toJsonAST.toOption.get == indianaJones.fromJson[Json].toOption.get)
+        } @@ TestAspect.nativeOnly,
         test("unicode") {
           assert(""""€🐵🥰"""".fromJson[String])(isRight(equalTo("€🐵🥰")))
         },
@@ -283,6 +296,18 @@ object CodecSpec extends ZIOSpecDefault {
           .mkString
 
       implicit val codec: JsonCodec[Custom] = DeriveJsonCodec.gen[Custom]
+    }
+
+    @jsonMemberNames(CustomCase(CustomNative.indianaJonesCase))
+    case class CustomNative(whatCaseIsThis: String)
+    object CustomNative {
+      def indianaJonesCase(str: String): String =
+        str
+          .split("(?:\\p{Upper})")
+          .map(part => s"${part.head.toLower}${part.substring(1, part.length).toUpperCase}")
+          .mkString
+
+      implicit val codec: JsonCodec[CustomNative] = DeriveJsonCodec.gen[CustomNative]
     }
 
     @jsonMemberNames(KebabCase)
