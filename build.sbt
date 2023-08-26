@@ -27,12 +27,12 @@ addCommandAlias("prepare", "fmt")
 
 addCommandAlias(
   "testJVM",
-  "zioJsonJVM/test; zioJsonYaml/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test; zioJsonInteropRefinedJVM/test"
+  "zioJsonJVM/test; zioJsonYaml/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test"
 )
 
 addCommandAlias(
-  "testMacros",
-  "zioJsonMacrosJVM/test; zioJsonMacrosJS/test; zioJsonMacrosNative/test"
+  "testScala2",
+  "zioJsonMacrosJVM/test; zioJsonMacrosJS/test; zioJsonMacrosNative/test; zioJsonInteropRefinedJVM/test"
 )
 
 addCommandAlias(
