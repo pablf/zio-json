@@ -27,22 +27,22 @@ addCommandAlias("prepare", "fmt")
 
 addCommandAlias(
   "testJVM",
-  "zioJsonJVM/test; zioJsonYaml/test; zioJsonMacrosJVM/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test; zioJsonInteropRefinedJVM/test"
+  "zioJsonJVM/test; zioJsonYaml/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test; zioJsonInteropRefinedJVM/test"
 )
 
 addCommandAlias(
-  "testJVMDotty",
-  "zioJsonJVM/test"
+  "testMacros",
+  "zioJsonMacrosJVM/test; zioJsonMacrosJS/test; zioJsonMacrosNative/test"
 )
 
 addCommandAlias(
   "testJS", 
-  "zioJsonJS/test;  zioJsonMacrosJS/test; zioJsonInteropScalaz7xJS/test; zioJsonInteropRefinedJS/test"
+  "zioJsonJS/test; zioJsonInteropScalaz7xJS/test; zioJsonInteropRefinedJS/test"
   )
 
 addCommandAlias(
   "testNative", 
-  "zioJsonNative/test;  zioJsonMacrosNative/test; zioJsonInteropScalaz7xNative/test; zioJsonInteropRefinedNative/test"
+  "zioJsonNative/test; zioJsonInteropScalaz7xNative/test; zioJsonInteropRefinedNative/test"
   )
 
 val zioVersion = "2.0.15"

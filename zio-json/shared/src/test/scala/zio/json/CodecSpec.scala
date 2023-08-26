@@ -119,6 +119,9 @@ object CodecSpec extends ZIOSpecDefault {
           assertTrue(OverridesAlsoWork("", 0).toJson == overrides)
         },
         test("key transformation - except native") {
+          // Problem in scala-native seems to be with implementation of package scala.scalanative.regex.Parser, in particular method `parsePerlFlags`.
+          // It should be fixed from there. Until then, better not to use regex.
+
           import exampletransformkeys._
           val indianaJones  = """{"wHATcASEiStHIS":""}"""
 
@@ -126,14 +129,6 @@ object CodecSpec extends ZIOSpecDefault {
           assertTrue(Custom("").toJson == indianaJones) &&
           assertTrue(Custom("").toJsonAST.toOption.get == indianaJones.fromJson[Json].toOption.get)
         } @@ TestAspect.exceptNative,
-        test("key transformation - native") {
-          import exampletransformkeys._
-          val indianaJones  = """{"wHATcASEiStHIS":""}"""
-
-          assert(indianaJones.fromJson[CustomNative])(isRight(equalTo(CustomNative("")))) &&
-          assertTrue(CustomNative("").toJson == indianaJones) &&
-          assertTrue(CustomNative("").toJsonAST.toOption.get == indianaJones.fromJson[Json].toOption.get)
-        } @@ TestAspect.nativeOnly,
         test("unicode") {
           assert(""""€🐵🥰"""".fromJson[String])(isRight(equalTo("€🐵🥰")))
         },
@@ -296,18 +291,6 @@ object CodecSpec extends ZIOSpecDefault {
           .mkString
 
       implicit val codec: JsonCodec[Custom] = DeriveJsonCodec.gen[Custom]
-    }
-
-    @jsonMemberNames(CustomCase(CustomNative.indianaJonesCase))
-    case class CustomNative(whatCaseIsThis: String)
-    object CustomNative {
-      def indianaJonesCase(str: String): String =
-        str
-          .split("(?:\\p{Upper})")
-          .map(part => s"${part.head.toLower}${part.substring(1, part.length).toUpperCase}")
-          .mkString
-
-      implicit val codec: JsonCodec[CustomNative] = DeriveJsonCodec.gen[CustomNative]
     }
 
     @jsonMemberNames(KebabCase)

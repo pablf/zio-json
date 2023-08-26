@@ -97,11 +97,11 @@ jobs:
       - name: Install libuv
         if: matrix.platform == 'Native'
         run: sudo apt-get update && sudo apt-get install -y libuv1-dev
+      - name: Run Macros tests
+        if: ${{ !startsWith(matrix.scala, '3.3.') }}
+        run: sbt ++${{ matrix.scala }}! testMacros
       - name: Run tests
         run: sbt ++${{ matrix.scala }}! test${{ matrix.platform }}
-      - name: Run Dotty tests
-        if: ${{ startsWith(matrix.scala, '3.3.') && matrix.platform == 'JVM' }}
-        run: sbt ++${{ matrix.scala }}! testJVMDotty
 
   ci:
     runs-on: ubuntu-20.04
