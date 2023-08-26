@@ -31,18 +31,28 @@ addCommandAlias(
 )
 
 addCommandAlias(
-  "testScala2",
+  "testScala2JVM",
   "zioJsonMacrosJVM/test; zioJsonInteropRefinedJVM/test"
 )
 
 addCommandAlias(
+  "testScala2JS",
+  "zioJsonMacrosJS/test; zioJsonInteropRefinedJS/test"
+)
+
+addCommandAlias(
+  "testScala2Native",
+  "zioJsonMacrosNative/test; zioJsonInteropRefinedNative/test"
+)
+
+addCommandAlias(
   "testJS", 
-  "zioJsonJS/test; zioJsonInteropScalaz7xJS/test; zioJsonInteropRefinedJS/test"
+  "zioJsonJS/test; zioJsonInteropScalaz7xJS/test"
   )
 
 addCommandAlias(
   "testNative", 
-  "zioJsonNative/test; zioJsonInteropScalaz7xNative/test; zioJsonInteropRefinedNative/test"
+  "zioJsonNative/test; zioJsonInteropScalaz7xNative/test"
   )
 
 val zioVersion = "2.0.15"
