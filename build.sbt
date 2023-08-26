@@ -27,7 +27,7 @@ addCommandAlias("prepare", "fmt")
 
 addCommandAlias(
   "testJVM",
-  "zioJsonJVM/test; zioJsonYaml/test; zioJsonMacrosJVM/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test; zioJsonInteropScalaz7xJS/test; zioJsonInteropRefinedJVM/test; zioJsonInteropRefinedJS/test"
+  "zioJsonJVM/test; zioJsonYaml/test; zioJsonMacrosJVM/test; zioJsonInteropHttp4s/test; zioJsonInteropScalaz7xJVM/test; zioJsonGolden/test; zioJsonInteropRefinedJVM/test"
 )
 
 addCommandAlias(
@@ -35,7 +35,9 @@ addCommandAlias(
   "zioJsonJVM/test"
 )
 
-addCommandAlias("testJS", "zioJsonJS/test")
+addCommandAlias("testJS", "zioJsonJS/test;  zioJsonMacrosJS/test; zioJsonInteropScalaz7xJS/test; zioJsonInteropRefinedJS/test")
+
+addCommandAlias("testNative", "zioJsonNative/test;  zioJsonMacrosNative/test; zioJsonInteropScalaz7xNative/test; zioJsonInteropRefinedNative/test")
 
 val zioVersion = "2.0.15"
 
@@ -62,7 +64,7 @@ lazy val zioJsonRoot = project
 
 val circeVersion = "0.14.3"
 
-lazy val zioJson = crossProject(JSPlatform, JVMPlatform)
+lazy val zioJson = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json"))
   .settings(stdSettings("zio-json"))
   .settings(crossProjectSettings)
@@ -217,6 +219,12 @@ lazy val zioJson = crossProject(JSPlatform, JVMPlatform)
       }
     }
   )
+  .nativeSettings(Test / fork := false)
+  .nativeSettings(
+    libraryDependencies ++= Seq(
+      "io.github.cquiroz" %%% "scala-java-time"      % "2.5.0"
+    )
+  )
   .enablePlugins(BuildInfoPlugin)
 
 lazy val zioJsonJS = zioJson.js
@@ -260,7 +268,7 @@ lazy val zioJsonYaml = project
   .dependsOn(zioJsonJVM)
   .enablePlugins(BuildInfoPlugin)
 
-lazy val zioJsonMacros = crossProject(JSPlatform, JVMPlatform)
+lazy val zioJsonMacros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-macros"))
   .settings(stdSettings("zio-json-macros"))
   .settings(crossProjectSettings)
@@ -275,6 +283,7 @@ lazy val zioJsonMacros = crossProject(JSPlatform, JVMPlatform)
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
+  .nativeSettings(Test / fork := false)
 
 lazy val zioJsonMacrosJVM = zioJsonMacros.jvm.dependsOn(zioJsonJVM)
 
@@ -301,7 +310,7 @@ lazy val zioJsonInteropHttp4s = project
   .dependsOn(zioJsonJVM)
   .enablePlugins(BuildInfoPlugin)
 
-lazy val zioJsonInteropRefined = crossProject(JSPlatform, JVMPlatform)
+lazy val zioJsonInteropRefined = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-interop-refined"))
   .jvmConfigure(_.dependsOn(zioJsonJVM))
   .jsConfigure(_.dependsOn(zioJsonJS))
@@ -317,7 +326,7 @@ lazy val zioJsonInteropRefined = crossProject(JSPlatform, JVMPlatform)
   )
   .enablePlugins(BuildInfoPlugin)
 
-lazy val zioJsonInteropScalaz7x = crossProject(JSPlatform, JVMPlatform)
+lazy val zioJsonInteropScalaz7x = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .in(file("zio-json-interop-scalaz7x"))
   .jvmConfigure(_.dependsOn(zioJsonJVM))
   .jsConfigure(_.dependsOn(zioJsonJS))
