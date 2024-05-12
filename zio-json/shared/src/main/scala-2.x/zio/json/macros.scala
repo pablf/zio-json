@@ -339,7 +339,7 @@ object DeriveJsonDecoder {
             throw new AssertionError(msg)
           }
 
-          inheritedHint.map(hint => {names(-1) = hint; ()})
+          inheritedHint.map(hint => {names(names.length - 1) = hint; ()})
 
           (names, aliases)
         }
