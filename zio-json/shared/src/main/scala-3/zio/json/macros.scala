@@ -351,7 +351,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
           }
 
           val finalPs = if (inheritedHint.isEmpty) ps else {
-            correctHint.map(hintValue => if (hintValue != ps.last) throw UnsafeJson(JsonError.Message("Hint should have been ") :: trace))
+            correctHint.map(hintValue => if (hintValue != ps.last) throw UnsafeJson(JsonError.Message(s"Hint should have been $hintValue") :: trace))
             ps.init
           }
 
@@ -386,7 +386,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
                     inheritedHint match {
                       case Some(hint) if key == hint => 
                         value match {
-                          case Json.Str(name) => correctHint.map(hintValue => if (hintValue != ps.last) throw UnsafeJson(JsonError.Message("Hint should have been ") :: trace))// msg???
+                          case Json.Str(name) => correctHint.map(hintValue => if (hintValue != ps.last) throw UnsafeJson(JsonError.Message(s"Hint should have been $hintValue") :: trace))
                           case _ => throw UnsafeJson(JsonError.Message(s"Non-string hint '$hint'") :: trace)
                         }
                   

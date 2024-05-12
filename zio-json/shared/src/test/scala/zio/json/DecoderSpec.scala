@@ -184,8 +184,8 @@ object DecoderSpec extends ZIOSpecDefault {
           assert("""{"hint":"child1"}""".fromJson[Child2])(isLeft(equalTo("(invalid disambiguator)"))) &&
           assert("""{"hint":"Abel"}""".fromJson[Child2])(isRight(equalTo(Child2()))) &&
           assert("""{"hint":"Abel"}""".fromJson[Child1])(isLeft(equalTo("(invalid disambiguator)")))
-          assert("""{}""".fromJson[Child1])(isLeft(equalTo("(invalid disambiguator)"))) &&
-          assert("""{}""".fromJson[Child2])(isLeft(equalTo("(invalid disambiguator)")))
+          assert("""{}""".fromJson[Child1])(isLeft(equalTo(".hint(missing)"))) &&
+          assert("""{}""".fromJson[Child2])(isLeft(equalTo(".hint(missing)")))
 
         },
         test("unicode") {
