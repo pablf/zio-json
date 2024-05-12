@@ -289,10 +289,10 @@ object DeriveJsonDecoder {
         ctx
           .annotations.collectFirst { case jsonHint(name) =>
             name
-          }.getOrElse(jsonHintFormat(ctx.typeInfo.short))
+          }.getOrElse(jsonHintFormat(ctx.typeName.short))
       }
     
-    val numberOfParams = ctx.params.size + inheritedHint.map(_ => 1).getOrElse(0)
+    val numberOfParams = ctx.parameters.size + inheritedHint.map(_ => 1).getOrElse(0)
 
     if (numberOfParams == 0)
       new JsonDecoder[A] {
@@ -348,7 +348,7 @@ object DeriveJsonDecoder {
         val matrix: StringMatrix    = new StringMatrix(names, aliases)
         val spans: Array[JsonError] = names.map(JsonError.ObjectAccess)
         lazy val tcs: Array[JsonDecoder[Any]] =
-          ctx.parameters.map(_.typeclass).toArray.asInstanceOf[Array[JsonDecoder[Any]]] ++ Array(JsonDecoder.string)
+          ctx.parameters.map(_.typeclass).toArray.asInstanceOf[Array[JsonDecoder[Any]]] ++ Array(JsonDecoder.string.asInstanceOf[JsonDecoder[Any]])
         lazy val defaults: Array[Option[Any]] =
           ctx.parameters.map(_.default).toArray ++ Array(None)
         lazy val namesMap: Map[String, Int] =
@@ -590,10 +590,10 @@ object DeriveJsonEncoder {
         ctx
           .annotations.collectFirst { case jsonHint(name) =>
             name
-          }.getOrElse(jsonHintFormat(ctx.typeInfo.short))
+          }.getOrElse(jsonHintFormat(ctx.typeName.short))
       }
     
-    val numberOfParams = ctx.params.size + inheritedHint.map(_ => 1).getOrElse(0)
+    val numberOfParams = ctx.parameters.size + inheritedHint.map(_ => 1).getOrElse(0)
 
     if (numberOfParams)
       new JsonEncoder[A] {

@@ -230,11 +230,11 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
           }.getOrElse(throw new Throwable("Not possible to use `inheritDiscriminator` annotation as there is no discriminator in parent class to inherit"))
         }
 
-        
+
     val correctHint = inheritedHint
-      .map {
+      .map { _ =>
         val jsonHintFormat: JsonMemberFormat =
-          ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(config.sumTypeMapping)
+          ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(IdentityFormat)
         ctx
           .annotations.collectFirst { case jsonHint(name) =>
             name
@@ -301,7 +301,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
         val spans:  Array[JsonError] = names.map(JsonError.ObjectAccess(_))
 
         lazy val tcs: Array[JsonDecoder[Any]] =
-          IArray.genericWrapArray(ctx.params.map(_.typeclass)).toArray.asInstanceOf[Array[JsonDecoder[Any]]] ++ Array(JsonDecoder.string)
+          IArray.genericWrapArray(ctx.params.map(_.typeclass)).toArray.asInstanceOf[Array[JsonDecoder[Any]]] ++ Array(JsonDecoder.string.asInstanceOf[JsonDecoder[Any]])
 
         lazy val defaults: Array[Option[Any]] =
           IArray.genericWrapArray(ctx.params.map(_.default)).toArray ++ Array(None)
@@ -561,7 +561,7 @@ object DeriveJsonEncoder extends Derivation[JsonEncoder] { self =>
 
     val correctHint = {
         val jsonHintFormat: JsonMemberFormat =
-          ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(config.sumTypeMapping)
+          ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(IdentityFormat)
         ctx
           .annotations.collectFirst { case jsonHint(name) =>
             name
