@@ -283,7 +283,7 @@ object DeriveJsonDecoder {
         }
     
     val correctHint = inheritedHint
-      .map {
+      .map { _ =>
         val jsonHintFormat: JsonMemberFormat =
           ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(config.sumTypeMapping)
         ctx
@@ -595,7 +595,7 @@ object DeriveJsonEncoder {
     
     val numberOfParams = ctx.parameters.size + inheritedHint.map(_ => 1).getOrElse(0)
 
-    if (numberOfParams)
+    if (numberOfParams == 0)
       new JsonEncoder[A] {
         def unsafeEncode(a: A, indent: Option[Int], out: Write): Unit = out.write("{}")
 
