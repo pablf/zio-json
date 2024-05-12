@@ -230,6 +230,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
           }.getOrElse(throw new Throwable("Not possible to use `inheritDiscriminator` annotation as there is no discriminator in parent class to inherit"))
         }
 
+        
     val correctHint = inheritedHint
       .map {
         val jsonHintFormat: JsonMemberFormat =
