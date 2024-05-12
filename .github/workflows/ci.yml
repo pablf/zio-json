@@ -31,6 +31,9 @@ jobs:
         uses: coursier/cache-action@v6
       - name: Lint code
         run: sbt check
+      - name: Check doc
+        run: sbt docs/checkReadme
+
 
   benchmarks:
     runs-on: ubuntu-20.04
