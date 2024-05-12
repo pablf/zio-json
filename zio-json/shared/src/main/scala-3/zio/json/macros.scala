@@ -222,7 +222,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
 
     val inheritedHint = ctx
       .annotations
-      .collectFirst { case _: inheritedDiscriminator => 
+      .collectFirst { case _: inheritDiscriminator => 
         ctx
           .inheritedAnnotations
           .collectFirst {
@@ -234,10 +234,10 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
       .map {
         val jsonHintFormat: JsonMemberFormat =
           ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(config.sumTypeMapping)
-        val names: Array[String] = ctx
+        ctx
           .annotations.collectFirst { case jsonHint(name) =>
             name
-          }.getOrElse(jsonHintFormat(p.typeName.short))
+          }.getOrElse(jsonHintFormat(ctx.typeInfo.short))
       }
     
     val numberOfParams = ctx.params.size + inheritedHint.map(_ => 1).getOrElse(0)
@@ -382,7 +382,7 @@ object DeriveJsonDecoder extends Derivation[JsonDecoder] { self =>
                       ps(field) = tcs(field).unsafeFromJsonAST(trace_, value)
                     }
                   case None =>
-                    discrim match {
+                    inheritedHint match {
                       case Some(hint) if key == hint => 
                         value match {
                           case Json.Str(name) => correctHint.map(hintValue => if (hintValue != ps.last) throw UnsafeJson(JsonError.Message("Hint should have been ") :: trace))// msg???
@@ -550,13 +550,22 @@ object DeriveJsonEncoder extends Derivation[JsonEncoder] { self =>
 
     val inheritedHint = ctx
       .annotations
-      .collectFirst { case _: inheritedDiscriminator => 
+      .collectFirst { case _: inheritDiscriminator => 
         ctx
           .inheritedAnnotations
           .collectFirst {
             case jsonDiscriminator(n) => n
           }.getOrElse(throw new Throwable("Not possible to use `inheritDiscriminator` annotation as there is no discriminator in parent class to inherit"))
         }
+
+    val correctHint = {
+        val jsonHintFormat: JsonMemberFormat =
+          ctx.inheritedAnnotations.collectFirst { case jsonHintNames(format) => format }.getOrElse(config.sumTypeMapping)
+        ctx
+          .annotations.collectFirst { case jsonHint(name) =>
+            name
+          }.getOrElse(jsonHintFormat(ctx.typeInfo.short))
+      }
     
     val numberOfParams = ctx.params.size + inheritedHint.map(_ => 1).getOrElse(0)
 
@@ -614,7 +623,7 @@ object DeriveJsonEncoder extends Derivation[JsonEncoder] { self =>
             JsonEncoder.string.unsafeEncode(hint, indent_, out)
             if (indent.isEmpty) out.write(":")
             else out.write(" : ")
-            JsonEncoder.string.unsafeEncode(getName(sub.annotations, sub.typeInfo.short), indent_, out)
+            JsonEncoder.string.unsafeEncode(correctHint, indent_, out)
 
             prevFields = true  
           }
@@ -667,9 +676,9 @@ object DeriveJsonEncoder extends Derivation[JsonEncoder] { self =>
               }
             }
             .map { chunk =>
-              discrim match {
+              inheritedHint match {
                 case None => chunk
-                case Some(hint) => chunk :+ hint -> Json.Str(getName(sub.annotations, sub.typeInfo.short))
+                case Some(hint) => chunk :+ hint -> Json.Str(correctHint)
               }
             }
             .map(Json.Obj.apply)
